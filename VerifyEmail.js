@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("http://localhost:5000/verify-signup-otp", {
+        fetch("https://fcompanion.onrender.com/verify-signup-otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, otp })
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Resend ────────────────────────────────────────────
     document.getElementById('resendCode').addEventListener('click', () => {
-        fetch("http://localhost:5000/resend-otp", {
+        fetch("https://fcompanion.onrender.com/resend-otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, purpose: "verification" })

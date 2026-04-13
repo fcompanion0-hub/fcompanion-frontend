@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ── Fetch Profile ─────────────────────────────────────
-    fetch('http://localhost:5000/profile', {
+    fetch('https://fcompanion.onrender.com/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.json())
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch('http://localhost:5000/profile', {
+        fetch('https://fcompanion.onrender.com/profile', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,

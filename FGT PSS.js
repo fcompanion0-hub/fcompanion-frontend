@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("http://localhost:5000/forgot-password", {
+        fetch("https://fcompanion.onrender.com/forgot-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("http://localhost:5000/verify-reset-otp", {
+        fetch("https://fcompanion.onrender.com/verify-reset-otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: userEmail, otp })
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Resend OTP ────────────────────────────────────────
     document.getElementById('resendCode').addEventListener('click', () => {
-        fetch("http://localhost:5000/resend-otp", {
+        fetch("https://fcompanion.onrender.com/resend-otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: userEmail, purpose: "reset" })
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("http://localhost:5000/reset-password", {
+        fetch("https://fcompanion.onrender.com/reset-password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: userEmail, otp: verifiedOtp, newPassword })

@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadChatHistory() {
         if (!token) return;
 
-        fetch('http://localhost:5000/chat/history', {
+        fetch('https://fcompanion.onrender.com/chat/history', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.json())
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Save Message to DB ────────────────────────────────
     function saveMessageToDB(text, role) {
         if (!token) return;
-        fetch('http://localhost:5000/chat/save', {
+        fetch('https://fcompanion.onrender.com/chat/save', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sendBtn.disabled = true;
         showTyping();
 
-        fetch('http://localhost:5000/webhook', {
+        fetch('https://fcompanion.onrender.com/webhook', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message, sessionId })
@@ -296,7 +296,7 @@ confirmClear.addEventListener('click', () => {
         return;
     }
 
-    fetch('http://localhost:5000/chat/clear', {
+    fetch('https://fcompanion.onrender.com/chat/clear', {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
     })
