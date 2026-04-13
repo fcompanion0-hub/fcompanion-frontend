@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Author" content="Timon Dodo">
+    <title>FCOMPANION - Forgot Password</title>
+    <link rel="stylesheet" href="FGT PSS.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="reset-container">
+        <div class="reset-card">
+            <button class="back-button" id="backButton">
+                ←
+            </button>
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
+            </button>
+
+            <div class="header">
+                <div class="icon-circle">
+                    🔒
+                </div>
+                <h1 id="stepTitle">Forgot Password?</h1>
+                <p id="stepDescription">No worries, we'll send you reset instructions.</p>
+            </div>
+
+            <div class="step-indicator">
+                <div class="step active" id="step1"></div>
+                <div class="step" id="step2"></div>
+                <div class="step" id="step3"></div>
+            </div>
+
+            <!-- Step 1: Email Input -->
+            <div class="form-content active" id="emailStep">
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            id="resetEmail"
+                            placeholder="your.email@nileuniversity.edu.ng"
+                            required
+                        >
+                        <small class="helper-text">Enter your Nile University email address</small>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Reset Code</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Verification Code -->
+            <div class="form-content" id="codeStep">
+                <form id="codeForm">
+                    <div class="verification-code">
+                        <input type="text" class="code-input" maxlength="1" id="code1" required>
+                        <input type="text" class="code-input" maxlength="1" id="code2" required>
+                        <input type="text" class="code-input" maxlength="1" id="code3" required>
+                        <input type="text" class="code-input" maxlength="1" id="code4" required>
+                        <input type="text" class="code-input" maxlength="1" id="code5" required>
+                        <input type="text" class="code-input" maxlength="1" id="code6" required>
+                    </div>
+                    <div class="resend-code">
+                        <a id="resendCode">Didn't receive code? Resend</a>
+                    </div>
+                    <button type="submit" class="submit-btn">Verify Code</button>
+                </form>
+                <p>Do make sure to check your junk/spam mail</p>
+            </div>
+
+            <!-- Step 3: New Password -->
+            <div class="form-content" id="passwordStep">
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="newPassword"
+                                placeholder="Atleast 8 characters with one number"
+                                required
+                            >
+                            <button type="button" class="password-toggle-btn" id="toggleNewPassword">
+                                <ion-icon name="eye"></ion-icon>
+                            </button>
+                        </div>
+                        <small class="helper-text">Must be at least 8 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="confirmNewPassword"
+                                placeholder="Confirm your password"
+                                required
+                            >
+                            <button type="button" class="password-toggle-btn" id="toggleConfirmPassword">
+                                <ion-icon name="eye"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Reset Password</button>
+                </form>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div class="form-content" id="successStep">
+                <div class="success-message">
+                    <div class="success-icon">✓</div>
+                    <h2 style="margin-bottom: 12px;">Password Reset!</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                        Your password has been successfully reset.
+                    </p>
+                    <button class="submit-btn" id="backToLogin">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="FGT PSS.js"></script>
+</body>
+</html>

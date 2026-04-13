@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Author" content="Timon Dodo">
+    <title>FCOMPANION - Log-In / Sign-Up</title>
+    <link rel="stylesheet" href="Auth.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
+            </button>
+
+            <div class="logo">
+                <h1>FCOMPANION</h1>
+                <p>Your AI Assistant for Faculty of Computing</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" id="loginTab">Log In</button>
+                <button class="tab" id="signupTab">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="form-content active" id="loginForm">
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            placeholder="your.email@nileuniversity.edu.ng"
+                            id="loginEmail"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                placeholder="Enter your password"
+                                id="loginPassword"
+                                required
+                            >
+                            <button type="button" class="password-toggle-btn" id="toggleLoginPassword">
+                                <ion-icon name="eye"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a id="forgotPasswordLink">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Log In</button>
+                </form>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="form-content" id="signupForm">
+                <form id="signupFormElement">
+                    
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="Enter your first name"
+                            id="firstName"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="Enter your last name"
+                            id="lastName"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            placeholder="your.email@nileuniversity.edu.ng"
+                            id="signupEmail"
+                            required
+                        >
+                        <small class="helper-text">Must be a valid Nile University email address</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Level/Year</label>
+                        <select class="form-select" id="level" required>
+                            <option value="100">100 Level (Year 1)</option>
+                            <option value="200">200 Level (Year 2)</option>
+                            <option value="300">300 Level (Year 3)</option>
+                            <option value="400">400 Level (Year 4)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" id="department" required>
+                            <option value="computer-science">Computer Science</option>
+                            <option value="software-engineering">Software Engineering</option>
+                            <option value="information-technology">Information Technology</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                            <option value="data-science">Data Science</option>
+                            <option value="information-system">Information System</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                placeholder="Atleast 8 characters with one number"
+                                id="signupPassword"
+                                required
+                            >
+                            <button type="button" class="password-toggle-btn" id="toggleSignupPassword">
+                                <ion-icon name="eye"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                placeholder="Confirm your password"
+                                id="confirmPassword"
+                                required
+                            >
+                            <button type="button" class="password-toggle-btn" id="toggleConfirmPassword">
+                                <ion-icon name="eye"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+
+                <div class="terms">
+                    By signing up, you agree to our <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="Auth.js"></script>    
+</body>
+</html>

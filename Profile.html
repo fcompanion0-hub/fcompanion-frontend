@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Author" content="Timon Dodo">
+    <title>FCOMPANION - Your Profile</title> 
+    <link rel="stylesheet" href="Profile.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo" id="backToDashboard">FCOMPANION</div>
+            <div class="header-actions">
+                <button class="btn theme-toggle" id="themeToggle">
+                    <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
+                </button>
+            </div>
+        </header>
+
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>Your Profile</h1>
+                <p>Manage your personal information and preferences</p>
+            </div>
+
+            <div class="profile-picture-section">
+                <div class="profile-picture-large" id="profilePictureLarge">
+                    T
+                </div>
+            </div>
+
+            <div class="form-section">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="firstName"
+                            placeholder="Enter your first name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="lastName"
+                            placeholder="Enter your last name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            id="emailAddress"
+                            placeholder="your.email@nileuniversity.edu.ng"
+                            disabled
+                        >
+                        <small class="helper-text">Email cannot be changed</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Level/Year</label>
+                        <select class="form-select" id="level" required>
+                            <option value="100">100 Level (Year 1)</option>
+                            <option value="200">200 Level (Year 2)</option>
+                            <option value="300">300 Level (Year 3)</option>
+                            <option value="400">400 Level (Year 4)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" id="department" required>
+                            <option value="computer-science">Computer Science</option>
+                            <option value="software-engineering">Software Engineering</option>
+                            <option value="information-technology">Information Technology</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                            <option value="data-science">Data Science</option>
+                            <option value="information-system">Information System</option>
+                        </select>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<script src="Profile.js"></script>
+</html>
