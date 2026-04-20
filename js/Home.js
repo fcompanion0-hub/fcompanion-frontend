@@ -320,5 +320,75 @@ confirmClear.addEventListener('click', () => {
         showToast('Error clearing chat.', 'error');
     });
 });
+
+(function() {
+    const splash = document.getElementById('splashScreen');
+    const MIN_MS = 2200;
+    const start  = Date.now();
+
+    function dismissSplash() {
+        const elapsed = Date.now() - start;
+        const delay   = Math.max(0, MIN_MS - elapsed);
+        setTimeout(() => splash.classList.add('hidden'), delay);
+    }
+
+    if (document.readyState === 'complete') {
+        dismissSplash();
+    } else {
+        window.addEventListener('load', dismissSplash);
+    }
+})();
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('[SW] Registered, scope:', reg.scope))
+            .catch(err => console.warn('[SW] Registration failed:', err));
+    });
+}
+
+let deferredPrompt = null;
+const installBtn   = document.getElementById('pwaInstallBtn');
+const pwaBanner    = document.getElementById('pwaBanner');
+const bannerInstall  = document.getElementById('bannerInstall');
+const bannerDismiss  = document.getElementById('bannerDismiss');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    installBtn.style.display = 'flex';
+
+    const dismissed = sessionStorage.getItem('pwaBannerDismissed');
+    if (!dismissed) {
+        setTimeout(() => pwaBanner.classList.add('visible'), 3000);
+    }
 });
 
+installBtn.addEventListener('click', triggerInstall);
+
+bannerInstall.addEventListener('click', triggerInstall);
+
+bannerDismiss.addEventListener('click', () => {
+    pwaBanner.classList.remove('visible');
+    sessionStorage.setItem('pwaBannerDismissed', '1');
+});
+
+async function triggerInstall() {
+    if (!deferredPrompt) return;
+    pwaBanner.classList.remove('visible');
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('[PWA] Install outcome:', outcome);
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+}
+
+window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    pwaBanner.classList.remove('visible');
+    deferredPrompt = null;
+    console.log('[PWA] App installed successfully');
+});
+
+});

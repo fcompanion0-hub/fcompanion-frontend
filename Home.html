@@ -1,92 +1,121 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Author" content="Timon Dodo">
     <meta name="description" content="A chatbot that helps students get accurate information Nile University's faculty of computing">
-    <title>FCOMPANION - AI Learning Assistant</title>
-    <link rel="stylesheet" href="Home.css">
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FCompanion">
+
+<title>FCOMPANION - AI Learning Assistant</title>
+
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<link rel="stylesheet" href="Home.css">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">FCOMPANION</div>
-            <div class="header-actions">
 
-                <!-- Clear Chat Button -->
-<!-- Clear Chat Button with emoji -->
+<div id="splashScreen">
+    <div class="splash-logo">F<span>COMPANION</span></div>
+    <div class="splash-loader"></div>
+    <div class="splash-tagline">AI Learning Assistant</div>
+</div>
+
+<div class="container">
+    <header>
+        <div class="logo">FCOMPANION</div>
+        <div class="header-actions">
+
             <button class="clear-chat-btn" id="clearChatBtn" title="Clear chat history">
                 <ion-icon name="trash-outline"></ion-icon>
             </button>
 
-                <button class="btn theme-toggle" id="themeToggle">
-                    <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
-                </button>
+            <button id="pwaInstallBtn" title="Add FCompanion to your home screen">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                <span>Install App</span>
+            </button>
 
-                <div class="profile-menu">
-                    <div class="profile-picture" id="profilePicture">T</div>
-                    <div class="profile-dropdown" id="profileDropdown">
-                        <div class="dropdown-header">
-                            <p id="userName">Timon</p>
-                            <span id="userEmail">timon@nileuniversity.edu.ng</span>
-                        </div>
-                        <div class="dropdown-item" id="profileBtn">
-                            <span class="dropdown-item-icon"><ion-icon name="person"></ion-icon></span>
-                            <span>Your Profile</span>
-                        </div>
-                        <div class="dropdown-item danger" id="logoutBtn">
-                            <span class="dropdown-item-icon"><ion-icon name="log-out"></ion-icon></span>
-                            <span>Log Out</span>
-                        </div>
+            <button class="btn theme-toggle" id="themeToggle">
+                <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
+            </button>
+
+            <div class="profile-menu">
+                <div class="profile-picture" id="profilePicture">T</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <p id="userName">Timon</p>
+                        <span id="userEmail">timon@nileuniversity.edu.ng</span>
+                    </div>
+                    <div class="dropdown-item" id="profileBtn">
+                        <span class="dropdown-item-icon"><ion-icon name="person"></ion-icon></span>
+                        <span>Your Profile</span>
+                    </div>
+                    <div class="dropdown-item danger" id="logoutBtn">
+                        <span class="dropdown-item-icon"><ion-icon name="log-out"></ion-icon></span>
+                        <span>Log Out</span>
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <main class="main-content">
-            <div class="avatar"></div>
+    <main class="main-content">
+        <div class="avatar"></div>
 
-            <div class="welcome-text" id="welcomeText">
-                <h1>Welcome, <span class="name" id="welcomeName"></span></h1>
-                <p class="subtitle">What would you like to learn today?</p>
-            </div>
+        <div class="welcome-text" id="welcomeText">
+            <h1>Welcome, <span class="name" id="welcomeName"></span></h1>
+            <p class="subtitle">What would you like to learn today?</p>
+        </div>
 
-            <div class="chat-container">
-                <div id="chatbox" class="chatbox"></div>
-                <div class="chat-input-area">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        class="chat-input"
-                        placeholder="Ask about your faculty, courses, or anything..."
-                    >
-                    <button id="sendBtn" class="send-btn">
-                        <span>➤</span>
-                    </button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Confirm Modal -->
-    <div class="modal-overlay" id="clearModal">
-        <div class="modal-card">
-            <div class="modal-icon">🗑️</div>
-            <h2>Clear Chat History?</h2>
-            <p>This will permanently delete all your previous messages. This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="modal-btn cancel" id="cancelClear">Cancel</button>
-                <button class="modal-btn confirm" id="confirmClear">Yes, Clear</button>
+        <div class="chat-container">
+            <div id="chatbox" class="chatbox"></div>
+            <div class="chat-input-area">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="chat-input"
+                    placeholder="Ask about your faculty, courses, or anything..."
+                >
+                <button id="sendBtn" class="send-btn">
+                    <span>➤</span>
+                </button>
             </div>
         </div>
-    </div>
+    </main>
+</div>
 
-    <script src="Home.js"></script>
+<div class="modal-overlay" id="clearModal">
+    <div class="modal-card">
+        <div class="modal-icon">🗑️</div>
+        <h2>Clear Chat History?</h2>
+        <p>This will permanently delete all your previous messages. This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="modal-btn cancel" id="cancelClear">Cancel</button>
+            <button class="modal-btn confirm" id="confirmClear">Yes, Clear</button>
+        </div>
+    </div>
+</div>
+
+<div id="pwaBanner">
+    <p>Add <strong>FCompanion</strong> to your home screen for quick access — no app store needed.</p>
+    <div class="pwa-banner-actions">
+        <button id="bannerInstall">Install</button>
+        <button id="bannerDismiss">Not now</button>
+    </div>
+</div>
+
+<script src="js/Home.js"></script>
+
 </body>
 </html>

@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Forgot Password ───────────────────────────────────
     document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = 'FGT PSS.html';
+        window.location.href = 'forgot-password.html';
     });
 
     document.getElementById('termsLink').addEventListener('click', (e) => {
