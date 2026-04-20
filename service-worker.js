@@ -2,23 +2,20 @@ const CACHE_NAME = "fcompanion-v1";
 
 const urlsToCache = [
   "/",
-  "index.html",
-  "Auth.html",
-  "Home.html",
-  "Profile.html",
+  "/index.html",
+  "/Auth.html",
+  "/Home.html",
 
-  "css/Home.css",
-  "css/Profile.css",
-  "css/Auth.css",
+  "/css/Home.css",
+  "/css/Auth.css",
 
 
-  "js/Auth.js",
-  "js/Home.js",
-  "js/Profile.js",
+  "/js/Auth.js",
+  "/js/Home.js",
 
-  "icons/icon-192.png",
-  "manifest.json",
-  "icons/icon-512.png"
+  "/icons/icon-192.png",
+  "/manifest.json",
+  "/icons/icon-512.png"
 ];
 
 // Install → cache files
@@ -41,7 +38,7 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
 
-  // Backend → always try network
+  // Backend → network first
   if (url.hostname.includes("onrender.com")) {
     event.respondWith(
       fetch(event.request).catch(() =>
@@ -55,6 +52,8 @@ self.addEventListener("fetch", event => {
 
   // Static → cache first
   event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request).catch(() => cached);
+    })
   );
 });
