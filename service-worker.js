@@ -2,23 +2,23 @@ const CACHE_NAME = "fcompanion-v1";
 
 const urlsToCache = [
   "/",
-  "/index.html",
-  "/login.html",
-  "/Home.html",
-  "/Profile.html",
+  "index.html",
+  "Auth.html",
+  "Home.html",
+  "Profile.html",
 
-  "/css/Home.css",
-  "/css/Profile.css",
-  "/css/Auth.css",
+  "css/Home.css",
+  "css/Profile.css",
+  "css/Auth.css",
 
 
-  "/js/Auth.js",
-  "/js/Home.js",
-  "/js/Profile.js",
+  "js/Auth.js",
+  "js/Home.js",
+  "js/Profile.js",
 
-  "/icons/icon-192.png",
-  "/manifest.json",
-  "/icons/icon-512.png"
+  "icons/icon-192.png",
+  "manifest.json",
+  "icons/icon-512.png"
 ];
 
 // Install → cache files
