@@ -391,4 +391,15 @@ window.addEventListener('appinstalled', () => {
     console.log('[PWA] App installed successfully');
 });
 
+const isIos        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                  || window.navigator.standalone === true;
+
+if (isIos && !isStandalone) {
+    installBtn.style.display = 'flex';
+    installBtn.addEventListener('click', () => {
+        showToast("Tap the Share button ⎋ then 'Add to Home Screen'", 'info', 5000);
+    }, { once: true });
+}
+
 });

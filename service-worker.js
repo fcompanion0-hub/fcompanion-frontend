@@ -1,4 +1,4 @@
-const CACHE_NAME = "fcompanion-v2";
+const CACHE_NAME = "fcompanion-v3";
 
 const urlsToCache = [
 "/",
