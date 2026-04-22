@@ -438,7 +438,6 @@ header {
     box-shadow: var(--shadow-md);
     flex-shrink: 0;
     margin: 10px 0;
-    -webkit-align-items: center;
 }
 
 .chat-input {
