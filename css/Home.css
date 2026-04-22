@@ -443,6 +443,7 @@ header {
 }
 
 .chat-input {
+    flex: 1;
     padding: 8px 6px;
     border: none;
     background: transparent;
