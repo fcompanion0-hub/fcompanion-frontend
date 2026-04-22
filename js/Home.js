@@ -353,44 +353,6 @@ const pwaBanner    = document.getElementById('pwaBanner');
 const bannerInstall  = document.getElementById('bannerInstall');
 const bannerDismiss  = document.getElementById('bannerDismiss');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    installBtn.style.display = 'flex';
-
-    const dismissed = sessionStorage.getItem('pwaBannerDismissed');
-    if (!dismissed) {
-        setTimeout(() => pwaBanner.classList.add('visible'), 3000);
-    }
-});
-
-installBtn.addEventListener('click', triggerInstall);
-
-bannerInstall.addEventListener('click', triggerInstall);
-
-bannerDismiss.addEventListener('click', () => {
-    pwaBanner.classList.remove('visible');
-    sessionStorage.setItem('pwaBannerDismissed', '1');
-});
-
-async function triggerInstall() {
-    if (!deferredPrompt) return;
-    pwaBanner.classList.remove('visible');
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log('[PWA] Install outcome:', outcome);
-    deferredPrompt = null;
-    installBtn.style.display = 'none';
-}
-
-window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-    pwaBanner.classList.remove('visible');
-    deferredPrompt = null;
-    console.log('[PWA] App installed successfully');
-});
-
 const isIos        = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                   || window.navigator.standalone === true;
@@ -398,8 +360,44 @@ const isStandalone = window.matchMedia('(display-mode: standalone)').matches
 if (isIos && !isStandalone) {
     installBtn.style.display = 'flex';
     installBtn.addEventListener('click', () => {
-        showToast("Tap the Share button ⎋ then 'Add to Home Screen'", 'info', 5000);
-    }, { once: true });
+        showToast("Tap the Share button then 'Add to Home Screen'", 'info', 5000);
+    });
+
+} else {
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'flex';
+        if (!sessionStorage.getItem('pwaBannerDismissed')) {
+            setTimeout(() => pwaBanner.classList.add('visible'), 3000);
+        }
+    });
+
+    installBtn.addEventListener('click', triggerInstall);
+    bannerInstall.addEventListener('click', triggerInstall);
+
+    async function triggerInstall() {
+        if (!deferredPrompt) return;
+        pwaBanner.classList.remove('visible');
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('[PWA] Install outcome:', outcome);
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+    }
+
+    window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        pwaBanner.classList.remove('visible');
+        deferredPrompt = null;
+    });
 }
+
+bannerDismiss.addEventListener('click', () => {
+    pwaBanner.classList.remove('visible');
+    sessionStorage.setItem('pwaBannerDismissed', '1');
+});
 
 });
