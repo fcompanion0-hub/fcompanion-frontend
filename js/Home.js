@@ -339,54 +339,53 @@ confirmClear.addEventListener('click', () => {
     }
 })();
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(reg => console.log('[SW] Registered, scope:', reg.scope))
-            .catch(err => console.warn('[SW] Registration failed:', err));
-    });
-}
-
+// ───────── PWA INSTALL ─────────
 let deferredPrompt = null;
-const installBtn   = document.getElementById('pwaInstallBtn');
-const pwaBanner    = document.getElementById('pwaBanner');
+
+const installBtn     = document.getElementById('pwaInstallBtn');
+const pwaBanner      = document.getElementById('pwaBanner');
 const bannerInstall  = document.getElementById('bannerInstall');
 const bannerDismiss  = document.getElementById('bannerDismiss');
 
-const isIos        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                   || window.navigator.standalone === true;
 
+// iOS (no install prompt exists)
 if (isIos && !isStandalone) {
     installBtn.style.display = 'flex';
+
     installBtn.addEventListener('click', () => {
-        showToast("Tap the Share button then 'Add to Home Screen'", 'info', 5000);
+        showToast("Tap Share → Add to Home Screen", 'info', 5000);
     });
 
 } else {
-    let deferredPrompt = null;
-
+    // Android / Chrome
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
+
         installBtn.style.display = 'flex';
+
         if (!sessionStorage.getItem('pwaBannerDismissed')) {
             setTimeout(() => pwaBanner.classList.add('visible'), 3000);
         }
     });
 
-    installBtn.addEventListener('click', triggerInstall);
-    bannerInstall.addEventListener('click', triggerInstall);
-
     async function triggerInstall() {
         if (!deferredPrompt) return;
+
         pwaBanner.classList.remove('visible');
+
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        console.log('[PWA] Install outcome:', outcome);
+
         deferredPrompt = null;
         installBtn.style.display = 'none';
     }
+
+    installBtn.addEventListener('click', triggerInstall);
+    bannerInstall.addEventListener('click', triggerInstall);
 
     window.addEventListener('appinstalled', () => {
         installBtn.style.display = 'none';
@@ -395,6 +394,7 @@ if (isIos && !isStandalone) {
     });
 }
 
+// Banner dismiss (shared)
 bannerDismiss.addEventListener('click', () => {
     pwaBanner.classList.remove('visible');
     sessionStorage.setItem('pwaBannerDismissed', '1');
