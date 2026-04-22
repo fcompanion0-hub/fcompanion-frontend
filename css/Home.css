@@ -439,6 +439,7 @@ header {
     border-radius: 50px;
     box-shadow: var(--shadow-md);
     flex-shrink: 0;
+    margin: 10px 0;
 }
 
 .chat-input {
@@ -757,7 +758,9 @@ header {
 
     .message { font-size: 0.88rem; }
 
-    .chat-input-area { padding: 8px 10px; }
+    .chat-input-area {
+        padding: 8px 10px;
+        margin: 20px 0; }
 
         #pwaInstallBtn {
         padding: 0;
