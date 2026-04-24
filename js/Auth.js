@@ -29,6 +29,17 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(dismiss, duration);
     }
 
+    // ── Loading Button Helpers ─────────────────────────────
+    function setLoading(btn, text) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> ${text}`;
+    }
+
+    function resetBtn(btn, text) {
+        btn.disabled = false;
+        btn.textContent = text;
+    }
+
     // ── Theme Toggle ──────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
@@ -100,6 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const btn = e.submitter;
+
         const email    = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value;
 
@@ -107,6 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
             showToast('Use a valid Nile University email.', 'error');
             return;
         }
+
+        setLoading(btn, "Please wait...");
 
         fetch("https://fcompanion.onrender.com/login", {
             method: "POST",
@@ -117,24 +132,27 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             if (data.message === "Login successful") {
                 const user = data.user;
-                localStorage.setItem("token",          data.token);
-                localStorage.setItem("firstName",      user.firstName);
-                localStorage.setItem("lastName",       user.lastName);
-                localStorage.setItem("userName",       user.firstName);
-                localStorage.setItem("userEmail",      user.email);
-                localStorage.setItem("userLevel",      user.level);
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("firstName", user.firstName);
+                localStorage.setItem("lastName", user.lastName);
+                localStorage.setItem("userName", user.firstName);
+                localStorage.setItem("userEmail", user.email);
+                localStorage.setItem("userLevel", user.level);
                 localStorage.setItem("userDepartment", user.department);
                 window.location.href = "Home.html";
             } else {
                 showToast(data.message, 'error');
             }
         })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
+        .catch(() => showToast('Something went wrong. Please try again.', 'error'))
+        .finally(() => resetBtn(btn, "Log In"));
     });
 
     // ── Signup ────────────────────────────────────────────
     document.getElementById('signupForm').addEventListener('submit', (e) => {
         e.preventDefault();
+
+        const btn = e.submitter;
 
         const firstName       = document.getElementById('firstName').value.trim();
         const lastName        = document.getElementById('lastName').value.trim();
@@ -160,6 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        setLoading(btn, "Creating account...");
+
         fetch("https://fcompanion.onrender.com/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -174,10 +194,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast(data.message, 'error');
             }
         })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
+        .catch(() => showToast('Something went wrong. Please try again.', 'error'))
+        .finally(() => resetBtn(btn, "Create Account"));
     });
 
-    // ── Forgot Password ───────────────────────────────────
+    // ── Links ─────────────────────────────────────────────
     document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
         e.preventDefault();
         window.location.href = 'forgot-password.html';
