@@ -449,7 +449,7 @@ header {
     background: transparent;
     color: var(--text-primary);
     font-family: var(--font-body);
-    font-size: 0.93rem;
+    font-size: 1rem;
     outline: none;
     min-width: 0;
 }
