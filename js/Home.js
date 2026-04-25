@@ -113,13 +113,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const BASE_URL = 'https://fcompanion.onrender.com';
 
+    // ── Date Separator Helpers ────────────────────────────
+    function getDateLabel(timestamp) {
+        const msgDate   = new Date(timestamp);
+        const today     = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        const sameDay = (a, b) =>
+            a.getDate() === b.getDate() &&
+            a.getMonth() === b.getMonth() &&
+            a.getFullYear() === b.getFullYear();
+
+        if (sameDay(msgDate, today)) return 'Today';
+        if (sameDay(msgDate, yesterday)) return 'Yesterday';
+
+        return msgDate.toLocaleDateString('en-GB', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+        });
+    }
+
+    function renderDateSeparator(label) {
+        const separator = document.createElement('div');
+        separator.className = 'date-separator';
+        separator.innerHTML = `<span>${label}</span>`;
+        chatbox.appendChild(separator);
+    }
+
     // ── Load Chat History ─────────────────────────────────
     async function loadChatHistory() {
         try {
             const token = SESSION.getToken();
 
             const res = await fetch(`${BASE_URL}/chat/history`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` }
             });
 
             if (res.status === 401) {
@@ -134,20 +163,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
             collapseHero();
 
-            messages.forEach(msg =>
-                renderMessage(msg.text, msg.role, msg.timestamp)
-            );
+            let lastLabel = null;
+
+            messages.forEach(msg => {
+                const label = msg.timestamp ? getDateLabel(msg.timestamp) : null;
+
+                if (label && label !== lastLabel) {
+                    renderDateSeparator(label);
+                    lastLabel = label;
+                }
+
+                renderMessage(msg.text, msg.role, msg.timestamp);
+            });
 
             chatbox.scrollTop = chatbox.scrollHeight;
 
         } catch {
-            // silently fail
+            // silent fail
         }
     }
 
     loadChatHistory();
 
-    // ── Save Message to DB ────────────────────────────────
+    // ── Save Message ──────────────────────────────────────
     async function saveMessageToDB(text, role) {
         try {
             await SESSION.apiFetch(`${BASE_URL}/chat/save`, {
@@ -155,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ text, role })
             });
         } catch {
-            // silently fail
+            // silent fail
         }
     }
 
@@ -180,6 +218,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!message || isWaiting) return;
 
         collapseHero();
+
+        const todayLabel = getDateLabel(new Date());
+        const lastSep = chatbox.querySelector('.date-separator:last-of-type');
+
+        if (!lastSep || lastSep.querySelector('span').textContent !== todayLabel) {
+            renderDateSeparator(todayLabel);
+        }
 
         renderMessage(message, 'user');
         saveMessageToDB(message, 'user');
@@ -256,175 +301,9 @@ document.addEventListener("DOMContentLoaded", () => {
         col.appendChild(bubble);
         col.appendChild(meta);
         row.appendChild(col);
-        chatbox.appendChild(row);
 
+        chatbox.appendChild(row);
         chatbox.scrollTop = chatbox.scrollHeight;
     }
-
-    // ── Typing Indicator ──────────────────────────────────
-    function showTyping() {
-        if (document.getElementById('typingRow')) return;
-
-        const row = document.createElement('div');
-        row.className = 'message-row bot typing-row';
-        row.id = 'typingRow';
-
-        const avatarEl = document.createElement('div');
-        avatarEl.className = 'bot-avatar';
-        avatarEl.textContent = 'FC';
-
-        const indicator = document.createElement('div');
-        indicator.className = 'typing-indicator';
-        indicator.innerHTML = '<span></span><span></span><span></span>';
-
-        row.appendChild(avatarEl);
-        row.appendChild(indicator);
-        chatbox.appendChild(row);
-
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    function removeTyping() {
-        const row = document.getElementById('typingRow');
-        if (row) row.remove();
-    }
-
-    // ── Events ────────────────────────────────────────────
-    sendBtn.addEventListener('click', sendMessage);
-
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    searchInput.focus();
-
-    // ── Clear Chat ────────────────────────────────────────
-    const clearChatBtn = document.getElementById('clearChatBtn');
-    const clearModal   = document.getElementById('clearModal');
-    const cancelClear  = document.getElementById('cancelClear');
-    const confirmClear = document.getElementById('confirmClear');
-
-    clearChatBtn.addEventListener('click', () => {
-        clearModal.style.display = 'flex';
-    });
-
-    cancelClear.addEventListener('click', () => {
-        clearModal.style.display = 'none';
-    });
-
-    clearModal.addEventListener('click', (e) => {
-        if (e.target === clearModal) clearModal.style.display = 'none';
-    });
-
-    confirmClear.addEventListener('click', async () => {
-        try {
-            const res = await SESSION.apiFetch(`${BASE_URL}/chat/clear`, { method: 'DELETE' });
-            const data = await res.json();
-
-            if (data.success) {
-                chatbox.innerHTML = '';
-                clearModal.style.display = 'none';
-
-                showToast('Chat history cleared.', 'success');
-
-                heroCollapsed = false;
-
-                if (avatar) avatar.style.display = '';
-                if (welcomeText) welcomeText.style.display = '';
-
-            } else {
-                showToast('Failed to clear history.', 'error');
-            }
-
-        } catch (err) {
-            console.error(err);
-            showToast('Error clearing chat.', 'error');
-        }
-    });
-
-    // ── Splash Screen ─────────────────────────────────────
-    (function () {
-        const splash = document.getElementById('splashScreen');
-        if (!splash) return;
-
-        const MIN_MS = 2200;
-        const start  = Date.now();
-
-        function dismissSplash() {
-            const elapsed = Date.now() - start;
-            const delay   = Math.max(0, MIN_MS - elapsed);
-
-            setTimeout(() => splash.classList.add('hidden'), delay);
-        }
-
-        if (document.readyState === 'complete') {
-            dismissSplash();
-        } else {
-            window.addEventListener('load', dismissSplash);
-        }
-    })();
-
-    // ── PWA Install ───────────────────────────────────────
-    let deferredPrompt = null;
-
-    const installBtn    = document.getElementById('pwaInstallBtn');
-    const pwaBanner     = document.getElementById('pwaBanner');
-    const bannerInstall = document.getElementById('bannerInstall');
-    const bannerDismiss = document.getElementById('bannerDismiss');
-
-    const isIos        = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const isStandalone =
-        window.matchMedia('(display-mode: standalone)').matches ||
-        window.navigator.standalone === true;
-
-    if (isIos && !isStandalone) {
-        installBtn.style.display = 'flex';
-
-        installBtn.addEventListener('click', () => {
-            showToast("Tap Share → Add to Home Screen", 'info', 5000);
-        });
-
-    } else {
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-
-            installBtn.style.display = 'flex';
-
-            if (!sessionStorage.getItem('pwaBannerDismissed')) {
-                setTimeout(() => pwaBanner.classList.add('visible'), 3000);
-            }
-        });
-
-        async function triggerInstall() {
-            if (!deferredPrompt) return;
-
-            pwaBanner.classList.remove('visible');
-
-            deferredPrompt.prompt();
-
-            const { outcome } = await deferredPrompt.userChoice;
-
-            deferredPrompt = null;
-            installBtn.style.display = 'none';
-        }
-
-        installBtn.addEventListener('click', triggerInstall);
-        bannerInstall.addEventListener('click', triggerInstall);
-
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-            pwaBanner.classList.remove('visible');
-            deferredPrompt = null;
-        });
-    }
-
-    bannerDismiss.addEventListener('click', () => {
-        pwaBanner.classList.remove('visible');
-        sessionStorage.setItem('pwaBannerDismissed', '1');
-    });
 
 });
