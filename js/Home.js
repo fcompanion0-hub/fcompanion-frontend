@@ -1,30 +1,34 @@
-const token = localStorage.getItem('token');
-if (!token) {
-    window.location.replace('Auth.html');
-}
+// ── Session Guard (runs before DOM) ───────────────────────────
+SESSION.initProtectedPage();
 
 document.addEventListener("DOMContentLoaded", () => {
 
     // ── Toast ─────────────────────────────────────────────
     function showToast(message, type = 'info', duration = 3000) {
         let container = document.querySelector('.toast-container');
+
         if (!container) {
             container = document.createElement('div');
             container.className = 'toast-container';
             document.body.appendChild(container);
         }
+
         const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
             <span class="toast-icon">${icons[type] || icons.info}</span>
             <span class="toast-message">${message}</span>
         `;
+
         container.appendChild(toast);
+
         const dismiss = () => {
             toast.classList.add('hide');
             toast.addEventListener('animationend', () => toast.remove(), { once: true });
         };
+
         toast.addEventListener('click', dismiss);
         setTimeout(dismiss, duration);
     }
@@ -36,23 +40,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const currentTheme = localStorage.getItem('theme') || 'light';
     html.setAttribute('data-theme', currentTheme);
+
     themeIcon.innerHTML = currentTheme === 'light'
         ? '<ion-icon name="moon"></ion-icon>'
         : '<ion-icon name="sunny"></ion-icon>';
 
     themeToggle.addEventListener('click', () => {
         const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+
         themeIcon.innerHTML = newTheme === 'light'
             ? '<ion-icon name="moon"></ion-icon>'
             : '<ion-icon name="sunny"></ion-icon>';
     });
 
     // ── Load User Data ────────────────────────────────────
-    const token          = localStorage.getItem('token');
-    const savedUserName  = localStorage.getItem('userName')  || 'Student';
-    const savedUserEmail = localStorage.getItem('userEmail') || '';
+    const savedUserName   = localStorage.getItem('userName') || 'Student';
+    const savedUserEmail  = localStorage.getItem('userEmail') || '';
     const savedProfilePic = localStorage.getItem('profilePicture');
 
     document.getElementById('welcomeName').textContent = savedUserName;
@@ -60,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('userEmail').textContent   = savedUserEmail;
 
     const profilePicture = document.getElementById('profilePicture');
+
     if (savedProfilePic) {
         profilePicture.innerHTML = `<img src="${savedProfilePic}" alt="Profile">`;
     } else {
@@ -87,9 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
         if (confirm('Are you sure you want to log out?')) {
-            ['userName','firstName','lastName','userEmail','profilePicture','sessionId','token']
-                .forEach(k => localStorage.removeItem(k));
-            window.location.href = 'Auth.html';
+            SESSION.stopSessionChecker();
+            SESSION.clearSession();
         }
         profileDropdown.classList.remove('active');
     });
@@ -105,55 +111,68 @@ document.addEventListener("DOMContentLoaded", () => {
     let heroCollapsed = false;
     let isWaiting     = false;
 
+    const BASE_URL = 'https://fcompanion.onrender.com';
 
     // ── Load Chat History ─────────────────────────────────
-    function loadChatHistory() {
-        if (!token) return;
+    async function loadChatHistory() {
+        try {
+            const token = SESSION.getToken();
 
-        fetch('https://fcompanion.onrender.com/chat/history', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(data => {
+            const res = await fetch(`${BASE_URL}/chat/history`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.status === 401) {
+                SESSION.clearSession();
+                return;
+            }
+
+            const data = await res.json();
             const messages = data.messages || [];
+
             if (messages.length === 0) return;
 
-            // Has history — collapse hero and render messages
             collapseHero();
-            messages.forEach(msg => renderMessage(msg.text, msg.role, msg.timestamp));
+
+            messages.forEach(msg =>
+                renderMessage(msg.text, msg.role, msg.timestamp)
+            );
+
             chatbox.scrollTop = chatbox.scrollHeight;
-        })
-        .catch(() => {}); // silently fail — not critical
+
+        } catch {
+            // silently fail
+        }
     }
 
     loadChatHistory();
 
-
     // ── Save Message to DB ────────────────────────────────
-    function saveMessageToDB(text, role) {
-        if (!token) return;
-        fetch('https://fcompanion.onrender.com/chat/save', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type':  'application/json'
-            },
-            body: JSON.stringify({ text, role })
-        }).catch(() => {}); // silently fail
+    async function saveMessageToDB(text, role) {
+        try {
+            await SESSION.apiFetch(`${BASE_URL}/chat/save`, {
+                method: 'POST',
+                body: JSON.stringify({ text, role })
+            });
+        } catch {
+            // silently fail
+        }
     }
 
     // ── Hero Collapse ─────────────────────────────────────
     function collapseHero() {
         if (heroCollapsed) return;
-        if (avatar)      { avatar.classList.add('fade-out'); }
-        if (welcomeText) { welcomeText.classList.add('fade-out'); }
+
+        if (avatar) avatar.classList.add('fade-out');
+        if (welcomeText) welcomeText.classList.add('fade-out');
+
         setTimeout(() => {
-            if (avatar)      avatar.style.display = 'none';
+            if (avatar) avatar.style.display = 'none';
             if (welcomeText) welcomeText.style.display = 'none';
         }, 400);
+
         heroCollapsed = true;
     }
-
 
     // ── Send Message ──────────────────────────────────────
     function sendMessage() {
@@ -161,15 +180,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!message || isWaiting) return;
 
         collapseHero();
+
         renderMessage(message, 'user');
         saveMessageToDB(message, 'user');
+
         searchInput.value = '';
 
         isWaiting = true;
         sendBtn.disabled = true;
+
         showTyping();
 
-        fetch('https://fcompanion.onrender.com/webhook', {
+        fetch(`${BASE_URL}/webhook`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message, sessionId })
@@ -180,7 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             removeTyping();
+
             const reply = data.reply || 'No response received.';
+
             renderMessage(reply, 'bot');
             saveMessageToDB(reply, 'bot');
 
@@ -201,7 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
     // ── Render Message ────────────────────────────────────
     function renderMessage(text, type, timestamp) {
         const row = document.createElement('div');
@@ -214,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
             row.appendChild(avatarEl);
         }
 
-        const col    = document.createElement('div');
+        const col = document.createElement('div');
         col.className = 'msg-col';
 
         const bubble = document.createElement('div');
@@ -224,23 +247,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const meta = document.createElement('div');
         meta.className = 'message-meta';
 
-        // Use stored timestamp if available, else now
         const time = timestamp
             ? new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
         meta.textContent = time;
 
         col.appendChild(bubble);
         col.appendChild(meta);
         row.appendChild(col);
         chatbox.appendChild(row);
+
         chatbox.scrollTop = chatbox.scrollHeight;
     }
-
 
     // ── Typing Indicator ──────────────────────────────────
     function showTyping() {
         if (document.getElementById('typingRow')) return;
+
         const row = document.createElement('div');
         row.className = 'message-row bot typing-row';
         row.id = 'typingRow';
@@ -256,6 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
         row.appendChild(avatarEl);
         row.appendChild(indicator);
         chatbox.appendChild(row);
+
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
@@ -264,145 +289,142 @@ document.addEventListener("DOMContentLoaded", () => {
         if (row) row.remove();
     }
 
-
     // ── Events ────────────────────────────────────────────
     sendBtn.addEventListener('click', sendMessage);
+
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
     });
+
     searchInput.focus();
 
-     // ── Elements ─────────────────────────────
-const clearChatBtn = document.getElementById('clearChatBtn');
-const clearModal   = document.getElementById('clearModal');
-const cancelClear  = document.getElementById('cancelClear');
-const confirmClear = document.getElementById('confirmClear');
+    // ── Clear Chat ────────────────────────────────────────
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    const clearModal   = document.getElementById('clearModal');
+    const cancelClear  = document.getElementById('cancelClear');
+    const confirmClear = document.getElementById('confirmClear');
 
-// ── Show Modal ────────────────────────────
-clearChatBtn.addEventListener('click', () => {
-    clearModal.style.display = 'flex';  // use display instead of class toggle for simplicity
-});
+    clearChatBtn.addEventListener('click', () => {
+        clearModal.style.display = 'flex';
+    });
 
-// ── Hide Modal ────────────────────────────
-cancelClear.addEventListener('click', () => {
-    clearModal.style.display = 'none';
-});
-clearModal.addEventListener('click', (e) => {
-    if (e.target === clearModal) clearModal.style.display = 'none';
-});
+    cancelClear.addEventListener('click', () => {
+        clearModal.style.display = 'none';
+    });
 
-// ── Confirm Clear ─────────────────────────
-confirmClear.addEventListener('click', () => {
-    if (!token) {
-        alert("You are not logged in.");
-        return;
-    }
+    clearModal.addEventListener('click', (e) => {
+        if (e.target === clearModal) clearModal.style.display = 'none';
+    });
 
-    fetch('https://fcompanion.onrender.com/chat/clear', {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            chatbox.innerHTML = '';
-            clearModal.style.display = 'none';
-            showToast('Chat history cleared.', 'success');
+    confirmClear.addEventListener('click', async () => {
+        try {
+            const res = await SESSION.apiFetch(`${BASE_URL}/chat/clear`, { method: 'DELETE' });
+            const data = await res.json();
 
-            // restore hero section
-            heroCollapsed = false;
-            if (avatar) avatar.style.display = '';
-            if (welcomeText) welcomeText.style.display = '';
-        } else {
-            showToast('Failed to clear history.', 'error');
+            if (data.success) {
+                chatbox.innerHTML = '';
+                clearModal.style.display = 'none';
+
+                showToast('Chat history cleared.', 'success');
+
+                heroCollapsed = false;
+
+                if (avatar) avatar.style.display = '';
+                if (welcomeText) welcomeText.style.display = '';
+
+            } else {
+                showToast('Failed to clear history.', 'error');
+            }
+
+        } catch (err) {
+            console.error(err);
+            showToast('Error clearing chat.', 'error');
         }
-    })
-    .catch(err => {
-        console.error(err);
-        showToast('Error clearing chat.', 'error');
-    });
-});
-
-(function() {
-    const splash = document.getElementById('splashScreen');
-    const MIN_MS = 2200;
-    const start  = Date.now();
-
-    function dismissSplash() {
-        const elapsed = Date.now() - start;
-        const delay   = Math.max(0, MIN_MS - elapsed);
-        setTimeout(() => splash.classList.add('hidden'), delay);
-    }
-
-    if (document.readyState === 'complete') {
-        dismissSplash();
-    } else {
-        window.addEventListener('load', dismissSplash);
-    }
-})();
-
-// ───────── PWA INSTALL ─────────
-let deferredPrompt = null;
-
-const installBtn     = document.getElementById('pwaInstallBtn');
-const pwaBanner      = document.getElementById('pwaBanner');
-const bannerInstall  = document.getElementById('bannerInstall');
-const bannerDismiss  = document.getElementById('bannerDismiss');
-
-const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                  || window.navigator.standalone === true;
-
-// iOS (no install prompt exists)
-if (isIos && !isStandalone) {
-    installBtn.style.display = 'flex';
-
-    installBtn.addEventListener('click', () => {
-        showToast("Tap Share → Add to Home Screen", 'info', 5000);
     });
 
-} else {
-    // Android / Chrome
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
+    // ── Splash Screen ─────────────────────────────────────
+    (function () {
+        const splash = document.getElementById('splashScreen');
+        if (!splash) return;
 
+        const MIN_MS = 2200;
+        const start  = Date.now();
+
+        function dismissSplash() {
+            const elapsed = Date.now() - start;
+            const delay   = Math.max(0, MIN_MS - elapsed);
+
+            setTimeout(() => splash.classList.add('hidden'), delay);
+        }
+
+        if (document.readyState === 'complete') {
+            dismissSplash();
+        } else {
+            window.addEventListener('load', dismissSplash);
+        }
+    })();
+
+    // ── PWA Install ───────────────────────────────────────
+    let deferredPrompt = null;
+
+    const installBtn    = document.getElementById('pwaInstallBtn');
+    const pwaBanner     = document.getElementById('pwaBanner');
+    const bannerInstall = document.getElementById('bannerInstall');
+    const bannerDismiss = document.getElementById('bannerDismiss');
+
+    const isIos        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+
+    if (isIos && !isStandalone) {
         installBtn.style.display = 'flex';
 
-        if (!sessionStorage.getItem('pwaBannerDismissed')) {
-            setTimeout(() => pwaBanner.classList.add('visible'), 3000);
+        installBtn.addEventListener('click', () => {
+            showToast("Tap Share → Add to Home Screen", 'info', 5000);
+        });
+
+    } else {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            installBtn.style.display = 'flex';
+
+            if (!sessionStorage.getItem('pwaBannerDismissed')) {
+                setTimeout(() => pwaBanner.classList.add('visible'), 3000);
+            }
+        });
+
+        async function triggerInstall() {
+            if (!deferredPrompt) return;
+
+            pwaBanner.classList.remove('visible');
+
+            deferredPrompt.prompt();
+
+            const { outcome } = await deferredPrompt.userChoice;
+
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
         }
-    });
 
-    async function triggerInstall() {
-        if (!deferredPrompt) return;
+        installBtn.addEventListener('click', triggerInstall);
+        bannerInstall.addEventListener('click', triggerInstall);
 
-        pwaBanner.classList.remove('visible');
-
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-
-        deferredPrompt = null;
-        installBtn.style.display = 'none';
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+            pwaBanner.classList.remove('visible');
+            deferredPrompt = null;
+        });
     }
 
-    installBtn.addEventListener('click', triggerInstall);
-    bannerInstall.addEventListener('click', triggerInstall);
-
-    window.addEventListener('appinstalled', () => {
-        installBtn.style.display = 'none';
+    bannerDismiss.addEventListener('click', () => {
         pwaBanner.classList.remove('visible');
-        deferredPrompt = null;
+        sessionStorage.setItem('pwaBannerDismissed', '1');
     });
-}
-
-// Banner dismiss (shared)
-bannerDismiss.addEventListener('click', () => {
-    pwaBanner.classList.remove('visible');
-    sessionStorage.setItem('pwaBannerDismissed', '1');
-});
 
 });

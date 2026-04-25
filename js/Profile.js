@@ -1,8 +1,12 @@
+// ── Session Guard (runs before DOM) ───────────────────────────
+SESSION.initProtectedPage();
+
 document.addEventListener("DOMContentLoaded", () => {
 
     // ── Toast ─────────────────────────────────────────────
     function showToast(message, type = 'info', duration = 3500) {
         let container = document.querySelector('.toast-container');
+
         if (!container) {
             container = document.createElement('div');
             container.className = 'toast-container';
@@ -36,14 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const currentTheme = localStorage.getItem('theme') || 'light';
     html.setAttribute('data-theme', currentTheme);
+
     themeIcon.innerHTML = currentTheme === 'light'
         ? '<ion-icon name="moon"></ion-icon>'
         : '<ion-icon name="sunny"></ion-icon>';
 
     themeToggle.addEventListener('click', () => {
         const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+
         themeIcon.innerHTML = newTheme === 'light'
             ? '<ion-icon name="moon"></ion-icon>'
             : '<ion-icon name="sunny"></ion-icon>';
@@ -57,43 +64,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const departmentSelect    = document.getElementById('department');
     const profilePictureLarge = document.getElementById('profilePictureLarge');
 
-    // ── Auth Check ────────────────────────────────────────
-    const token = localStorage.getItem('token');
-    if (!token) {
-        showToast('You are not logged in. Redirecting...', 'error');
-        setTimeout(() => window.location.href = 'Auth.html', 2000);
-        return;
-    }
+    const BASE_URL = 'https://fcompanion.onrender.com';
 
     // ── Fetch Profile ─────────────────────────────────────
-    fetch('https://fcompanion.onrender.com/profile', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) {
-            showToast(data.error, 'error');
-            setTimeout(() => window.location.href = 'Auth.html', 2000);
-            return;
-        }
+    SESSION.apiFetch(`${BASE_URL}/profile`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                showToast(data.error, 'error');
+                setTimeout(() => window.location.replace('Auth.html'), 2000);
+                return;
+            }
 
-        firstNameInput.value   = data.firstName   || '';
-        lastNameInput.value    = data.lastName     || '';
-        emailInput.value       = data.email        || '';
-        levelSelect.value      = data.level        || '';
-        departmentSelect.value = data.department   || '';
+            firstNameInput.value   = data.firstName   || '';
+            lastNameInput.value    = data.lastName    || '';
+            emailInput.value       = data.email       || '';
+            levelSelect.value      = data.level       || '';
+            departmentSelect.value = data.department  || '';
 
-        if (data.profilePicture) {
-            profilePictureLarge.innerHTML = `<img src="${data.profilePicture}" alt="Profile">`;
-        } else {
-            profilePictureLarge.textContent = data.firstName.charAt(0).toUpperCase();
-        }
-    })
-    .catch(() => showToast('Failed to load profile. Please try again.', 'error'));
-
+            if (data.profilePicture) {
+                profilePictureLarge.innerHTML = `<img src="${data.profilePicture}" alt="Profile">`;
+            } else {
+                profilePictureLarge.textContent = data.firstName.charAt(0).toUpperCase();
+            }
+        })
+        .catch(() => {
+            showToast('Failed to load profile. Please try again.', 'error');
+        });
 
     // ── Form Submit ───────────────────────────────────────
-    document.getElementById('profileForm').addEventListener('submit', (e) => {
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const updatedProfile = {
@@ -113,16 +113,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch('https://fcompanion.onrender.com/profile', {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type':  'application/json'
-            },
-            body: JSON.stringify(updatedProfile)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+            const res  = await SESSION.apiFetch(`${BASE_URL}/profile`, {
+                method: 'PUT',
+                body: JSON.stringify(updatedProfile)
+            });
+
+            const data = await res.json();
+
             if (data.success) {
                 localStorage.setItem('firstName',      updatedProfile.firstName);
                 localStorage.setItem('lastName',       updatedProfile.lastName);
@@ -132,19 +130,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 showToast('Profile updated successfully!', 'success');
                 setTimeout(() => window.location.href = 'Home.html', 1500);
+
             } else {
                 showToast(data.error || 'Failed to update profile.', 'error');
             }
-        })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
+
+        } catch {
+            showToast('Something went wrong. Please try again.', 'error');
+        }
     });
 
-    // ── Cancel ────────────────────────────────────────────
+    // ── Cancel / Back ─────────────────────────────────────
     document.getElementById('cancelBtn').addEventListener('click', () => {
         window.location.href = 'Home.html';
     });
 
-    // ── Back to Dashboard ─────────────────────────────────
     document.getElementById('backToDashboard').addEventListener('click', () => {
         window.location.href = 'Home.html';
     });
