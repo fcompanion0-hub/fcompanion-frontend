@@ -69,6 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     codeInputs.forEach((input, index) => {
         input.addEventListener('input', () => {
+            // Enforce single digit since maxlength is ignored on type="number"
+            if (input.value.length > 1) input.value = input.value.slice(0, 1);
+
             if (input.value.length === 1 && index < codeInputs.length - 1)
                 codeInputs[index + 1].focus();
         });
