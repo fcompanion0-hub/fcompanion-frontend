@@ -204,14 +204,4 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = 'forgot-password.html';
     });
 
-    document.getElementById('termsLink').addEventListener('click', (e) => {
-        e.preventDefault();
-        showToast('Terms of Service — Coming soon!', 'info');
-    });
-
-    document.getElementById('privacyLink').addEventListener('click', (e) => {
-        e.preventDefault();
-        showToast('Privacy Policy — Coming soon!', 'info');
-    });
-
 });
