@@ -825,6 +825,10 @@ header {
     #pwaInstallBtn ion-icon {
         font-size: 1.3rem;
     }
+
+    .scroll-to-bottom{
+        bottom: 120px;
+    }
 }
 
 @media (max-width: 768px) {
