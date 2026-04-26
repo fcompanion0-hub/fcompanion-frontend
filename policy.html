@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — FCOMPANION</title>
+    <link rel="stylesheet" href="css/Terms.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <!-- Nav -->
+    <header class="legal-nav">
+        <button class="back-btn" onclick="window.location.href='Auth.html'">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+            <span>Back to Sign Up</span>
+        </button>
+        <span class="logo">FCOMPANION</span>
+        <button class="theme-toggle" id="themeToggle">
+            <span id="themeIcon"><ion-icon name="moon"></ion-icon></span>
+        </button>
+    </header>
+
+    <!-- Hero -->
+    <div class="legal-hero">
+        <div class="hero-badge">🔒 Privacy</div>
+        <h1 class="legal-title">Privacy Policy</h1>
+        <p class="legal-subtitle">Last updated: April 2025 &nbsp;·&nbsp; Nile University of Nigeria</p>
+    </div>
+
+    <!-- Content -->
+    <main class="legal-content">
+
+        <div class="toc-card">
+            <p class="toc-label">On this page</p>
+            <ul class="toc-list">
+                <li><a href="#overview">1. Overview</a></li>
+                <li><a href="#collect">2. Data We Collect</a></li>
+                <li><a href="#use">3. How We Use Your Data</a></li>
+                <li><a href="#storage">4. Data Storage & Security</a></li>
+                <li><a href="#sharing">5. Data Sharing</a></li>
+                <li><a href="#retention">6. Data Retention</a></li>
+                <li><a href="#rights">7. Your Rights</a></li>
+                <li><a href="#cookies">8. Cookies & Local Storage</a></li>
+                <li><a href="#children">9. Minors</a></li>
+                <li><a href="#contact">10. Contact</a></li>
+            </ul>
+        </div>
+
+        <section id="overview" class="legal-section">
+            <div class="section-number">01</div>
+            <div class="section-body">
+                <h2>Overview</h2>
+                <p>FCOMPANION is committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use the FCOMPANION service — an AI-powered chatbot for students of the Faculty of Computing, Nile University of Nigeria.</p>
+                <p>By using FCOMPANION, you consent to the data practices described in this policy. We encourage you to read this document carefully.</p>
+                <div class="callout callout-info">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                    <p>We do not sell, rent, or trade your personal data to any third party for commercial purposes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="collect" class="legal-section">
+            <div class="section-number">02</div>
+            <div class="section-body">
+                <h2>Data We Collect</h2>
+                <p>We collect the following categories of information:</p>
+
+                <div class="data-table">
+                    <div class="data-row data-header">
+                        <span>Data Type</span>
+                        <span>What We Collect</span>
+                        <span>Why</span>
+                    </div>
+                    <div class="data-row">
+                        <span>Account Info</span>
+                        <span>First name, last name, email, level, department</span>
+                        <span>Registration & personalisation</span>
+                    </div>
+                    <div class="data-row">
+                        <span>Credentials</span>
+                        <span>Password (hashed, never plain text)</span>
+                        <span>Authentication</span>
+                    </div>
+                    <div class="data-row">
+                        <span>Chat History</span>
+                        <span>Messages sent to and received from the chatbot</span>
+                        <span>Persistent chat experience</span>
+                    </div>
+                    <div class="data-row">
+                        <span>Session Data</span>
+                        <span>JWT tokens, session identifiers</span>
+                        <span>Secure access management</span>
+                    </div>
+                    <div class="data-row">
+                        <span>Profile Picture</span>
+                        <span>Optional photo you upload</span>
+                        <span>Profile personalisation</span>
+                    </div>
+                </div>
+
+                <p style="margin-top: 1rem;">We do <strong>not</strong> collect your device location, contacts, microphone data, or any information outside of what is listed above.</p>
+            </div>
+        </section>
+
+        <section id="use" class="legal-section">
+            <div class="section-number">03</div>
+            <div class="section-body">
+                <h2>How We Use Your Data</h2>
+                <p>Your data is used exclusively for the following purposes:</p>
+                <ul class="legal-list">
+                    <li><strong>Service delivery</strong> — to authenticate you and provide chatbot responses</li>
+                    <li><strong>Personalisation</strong> — to address you by name and tailor responses to your department and level</li>
+                    <li><strong>Chat continuity</strong> — to store and display your conversation history across sessions</li>
+                    <li><strong>Security</strong> — to verify your identity via OTP during sign-up and password reset</li>
+                    <li><strong>Service improvement</strong> — anonymised, aggregated usage patterns may be reviewed to improve the chatbot's accuracy</li>
+                </ul>
+                <p>We do <strong>not</strong> use your data for advertising, profiling, or any purpose unrelated to providing the FCOMPANION service.</p>
+            </div>
+        </section>
+
+        <section id="storage" class="legal-section">
+            <div class="section-number">04</div>
+            <div class="section-body">
+                <h2>Data Storage & Security</h2>
+                <p>Your data is stored securely using the following measures:</p>
+                <ul class="legal-list">
+                    <li><strong>Database</strong> — MongoDB Atlas with SSL/TLS encryption in transit</li>
+                    <li><strong>Passwords</strong> — Hashed using bcrypt before storage; never stored in plain text</li>
+                    <li><strong>Authentication</strong> — JWT tokens with expiration; stored only in your browser's localStorage</li>
+                    <li><strong>OTP codes</strong> — Temporary, expire after a short window, and are invalidated after use</li>
+                    <li><strong>API</strong> — Hosted on Render with HTTPS enforced on all endpoints</li>
+                </ul>
+                <div class="callout callout-warning">
+                    <ion-icon name="warning-outline"></ion-icon>
+                    <p>No system is 100% secure. While we implement strong safeguards, we cannot guarantee absolute security of data transmitted over the internet.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sharing" class="legal-section">
+            <div class="section-number">05</div>
+            <div class="section-body">
+                <h2>Data Sharing</h2>
+                <p>We do not sell or share your personal data with third parties except in the following limited cases:</p>
+                <ul class="legal-list">
+                    <li><strong>Google Dialogflow</strong> — Your chat messages are processed by Dialogflow (Google Cloud) to generate AI responses. Google's data processing terms apply. Messages are not stored by Google beyond the processing window.</li>
+                    <li><strong>Resend (Email Service)</strong> — Your email address is shared with Resend solely for the purpose of delivering OTP verification emails.</li>
+                    <li><strong>Legal obligation</strong> — We may disclose your data if required by applicable law or a valid legal process.</li>
+                </ul>
+                <p>Beyond the above, your data is never shared with advertisers, data brokers, or any commercial third party.</p>
+            </div>
+        </section>
+
+        <section id="retention" class="legal-section">
+            <div class="section-number">06</div>
+            <div class="section-body">
+                <h2>Data Retention</h2>
+                <p>We retain your data for as long as your account is active. Specifically:</p>
+                <ul class="legal-list">
+                    <li><strong>Account data</strong> — Retained until you request deletion or your account is terminated</li>
+                    <li><strong>Chat history</strong> — Retained indefinitely unless you use the "Clear Chat" feature or request deletion</li>
+                    <li><strong>OTP codes</strong> — Automatically deleted after use or expiry (typically within 10 minutes)</li>
+                    <li><strong>Inactive accounts</strong> — Accounts with no activity for 12 months may be subject to deletion following a notice email</li>
+                </ul>
+                <p>Upon account deletion, all personally identifiable data will be permanently removed within 30 days.</p>
+            </div>
+        </section>
+
+        <section id="rights" class="legal-section">
+            <div class="section-number">07</div>
+            <div class="section-body">
+                <h2>Your Rights</h2>
+                <p>You have the following rights regarding your personal data:</p>
+                <ul class="legal-list">
+                    <li><strong>Access</strong> — Request a copy of the personal data we hold about you</li>
+                    <li><strong>Correction</strong> — Update inaccurate or incomplete information via the Profile page</li>
+                    <li><strong>Deletion</strong> — Request permanent deletion of your account and all associated data</li>
+                    <li><strong>Portability</strong> — Request your chat history in a readable format</li>
+                    <li><strong>Objection</strong> — Object to specific uses of your data</li>
+                </ul>
+                <p>To exercise any of these rights, contact us using the details in Section 10.</p>
+            </div>
+        </section>
+
+        <section id="cookies" class="legal-section">
+            <div class="section-number">08</div>
+            <div class="section-body">
+                <h2>Cookies & Local Storage</h2>
+                <p>FCOMPANION does not use tracking cookies. We use your browser's <strong>localStorage</strong> to store:</p>
+                <ul class="legal-list">
+                    <li>Your authentication token (JWT)</li>
+                    <li>Your name and basic profile details for display purposes</li>
+                    <li>Your theme preference (light/dark mode)</li>
+                    <li>Your Dialogflow session ID for chat continuity</li>
+                </ul>
+                <p>This data is stored locally on your device and is never transmitted to third parties. You can clear it at any time by logging out or clearing your browser's local storage.</p>
+            </div>
+        </section>
+
+        <section id="children" class="legal-section">
+            <div class="section-number">09</div>
+            <div class="section-body">
+                <h2>Minors</h2>
+                <p>FCOMPANION is intended for university students and is not directed at children under the age of 16. We do not knowingly collect personal data from anyone under 16. If you believe a minor has created an account, please contact us immediately so we can remove their data.</p>
+            </div>
+        </section>
+
+        <section id="contact" class="legal-section">
+            <div class="section-number">10</div>
+            <div class="section-body">
+                <h2>Contact</h2>
+                <p>For any privacy-related requests, questions, or concerns, please contact us through the following channels:</p>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <ion-icon name="school-outline"></ion-icon>
+                        <div>
+                            <strong>Faculty of Computing</strong>
+                            <span>Nile University of Nigeria, Abuja</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <div>
+                            <strong>Email</strong>
+                            <span>computing@nileuniversity.edu.ng</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem;">We aim to respond to all privacy requests within <strong>5 business days</strong>.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="legal-footer">
+        <p>© 2025 FCOMPANION · Faculty of Computing · Nile University of Nigeria</p>
+        <div class="footer-links">
+            <a href="terms.html">Terms of Service</a>
+            <span>·</span>
+            <a href="privacy.html" class="active">Privacy Policy</a>
+            <span>·</span>
+            <a href="Auth.html">Back to Sign Up</a>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" title="Back to top">
+    <ion-icon name="arrow-up-outline"></ion-icon>
+    
+</button>
+</div>
+
+<script src="js/Terms.js"></script>
+
+</body>
+</html>

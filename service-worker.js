@@ -1,5 +1,5 @@
-const CACHE_STATIC = "fcompanion-static-v8";
-const CACHE_CHAT   = "fcompanion-chat-v8";
+const CACHE_STATIC = "fcompanion-static-v9";
+const CACHE_CHAT   = "fcompanion-chat-v9";
 
 // Static assets to pre-cache on install
 const STATIC_ASSETS = [
