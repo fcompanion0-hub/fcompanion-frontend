@@ -604,12 +604,42 @@ header {
     color: #4f46e5;
 }
 
-@keyframes splashPulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.6; }
+.scroll-to-bottom {
+    position: absolute;
+    bottom: 80px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all var(--transition);
+    z-index: 200;
 }
 
-    /* Animated ring loader */
+.scroll-to-bottom.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-to-bottom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+}
+
+.scroll-to-bottom:active { transform: scale(0.93); }
+
 /* ── PWA Install Button ── */
 #pwaInstallBtn {
     display: none;          /* JS controls visibility — don't change this */
@@ -764,7 +794,10 @@ header {
     0%, 70%, 100% { transform: translateY(0); opacity: 0.35; }
     35%           { transform: translateY(-5px); opacity: 1; }
 }
-
+@keyframes splashPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
 
 @media (max-width: 480px) {
     .header-actions { gap: 8px; }

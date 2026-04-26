@@ -471,4 +471,20 @@ bannerDismiss.addEventListener('click', () => {
     sessionStorage.setItem('pwaBannerDismissed', '1');
 });
 
+// ── Scroll to Bottom Button ───────────────────────────
+const scrollToBottomBtn = document.getElementById('scrollToBottom');
+
+chatbox.addEventListener('scroll', () => {
+    const distanceFromBottom = chatbox.scrollHeight - chatbox.scrollTop - chatbox.clientHeight;
+    if (distanceFromBottom > 200) {
+        scrollToBottomBtn.classList.add('visible');
+    } else {
+        scrollToBottomBtn.classList.remove('visible');
+    }
+});
+
+scrollToBottomBtn.addEventListener('click', () => {
+    chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
+});
+
 });
