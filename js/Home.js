@@ -144,8 +144,6 @@ function renderDateSeparator(label) {
 async function loadChatHistory() {
     const wakeupOverlay = document.getElementById('wakeupOverlay');
 
-    await new Promise(resolve => setTimeout(resolve, 4000));
-
     try {
         const token = SESSION.getToken();
         const res = await fetch(`${BASE_URL}/chat/history`, {

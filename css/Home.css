@@ -129,6 +129,19 @@ header {
 
 #themeIcon ion-icon { position: relative; top: 2px; }
 
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
 /* ── Profile ── */
 .profile-menu { position: relative; }
 
@@ -232,9 +245,9 @@ header {
     margin-top: 100px;
     margin-bottom: 14px;
     flex-shrink: 0;
-    background: linear-gradient(135deg, #3b82f6, #7c3aed);
+    background: url('../icons/icon-192.png') center/cover no-repeat;
     animation: float 2s ease-in-out infinite;
-    box-shadow: 0 8px 24px rgba(59,130,246,.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     position: relative;
 }
 
@@ -595,13 +608,11 @@ header {
 .splash-logo {
     font-family: 'Shrikhand', cursive;
     font-size: clamp(2rem, 8vw, 3.5rem);
-    color: #fff;
-    letter-spacing: 2px;
+    background: linear-gradient(120deg, #3b82f6, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     animation: splashPulse 1.6s ease-in-out infinite;
-}
-
-.splash-logo span {
-    color: #4f46e5;
 }
 
 .scroll-to-bottom {
