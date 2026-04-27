@@ -142,9 +142,12 @@ function renderDateSeparator(label) {
 
 // ── Load Chat History ─────────────────────────────────
 async function loadChatHistory() {
+    const wakeupOverlay = document.getElementById('wakeupOverlay');
+
+    await new Promise(resolve => setTimeout(resolve, 4000));
+
     try {
         const token = SESSION.getToken();
-
         const res = await fetch(`${BASE_URL}/chat/history`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -154,30 +157,29 @@ async function loadChatHistory() {
             return;
         }
 
-        const data = await res.json();
+        const data     = await res.json();
         const messages = data.messages || [];
+
+        wakeupOverlay.classList.add('hidden');
 
         if (messages.length === 0) return;
 
         collapseHero();
 
         let lastLabel = null;
-
         messages.forEach(msg => {
             const label = msg.timestamp ? getDateLabel(msg.timestamp) : null;
-
             if (label && label !== lastLabel) {
                 renderDateSeparator(label);
                 lastLabel = label;
             }
-
             renderMessage(msg.text, msg.role, msg.timestamp);
         });
 
         chatbox.scrollTop = chatbox.scrollHeight;
 
     } catch {
-        // silently fail
+        setTimeout(() => wakeupOverlay.classList.add('hidden'), 10000);
     }
 }
 
@@ -219,7 +221,8 @@ function sendMessage() {
 
     // Inject Today separator if this is the first message of the day
     const todayLabel = getDateLabel(new Date());
-    const lastSep    = chatbox.querySelector('.date-separator:last-of-type');
+    const allSeps = chatbox.querySelectorAll('.date-separator');
+    const lastSep = allSeps[allSeps.length - 1];
 
     if (!lastSep || lastSep.querySelector('span').textContent !== todayLabel) {
         renderDateSeparator(todayLabel);
@@ -376,8 +379,18 @@ confirmClear.addEventListener('click', async () => {
 
             heroCollapsed = false;
 
-            if (avatar) avatar.style.display = '';
-            if (welcomeText) welcomeText.style.display = '';
+            if (avatar) {
+                avatar.classList.remove('fade-out');
+                avatar.style.display = '';
+                avatar.style.animation = 'none';
+                avatar.offsetHeight;
+                avatar.style.animation = '';
+            }
+
+            if (welcomeText) {
+                welcomeText.style.display = '';
+                welcomeText.classList.remove('fade-out');
+            }
 
         } else {
             showToast('Failed to clear history.', 'error');
