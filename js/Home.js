@@ -437,6 +437,7 @@ const isStandalone =
 
 if (isIos && !isStandalone) {
     installBtn.style.display = 'flex';
+    installBtn.classList.add('visible');
 
     installBtn.addEventListener('click', () => {
         showToast("Tap Share → Add to Home Screen", 'info', 5000);
@@ -448,6 +449,7 @@ if (isIos && !isStandalone) {
         deferredPrompt = e;
 
         installBtn.style.display = 'flex';
+        installBtn.classList.add('visible');
 
         if (!sessionStorage.getItem('pwaBannerDismissed')) {
             setTimeout(() => pwaBanner.classList.add('visible'), 3000);
@@ -465,6 +467,7 @@ if (isIos && !isStandalone) {
 
         deferredPrompt = null;
         installBtn.style.display = 'none';
+        installBtn.classList.remove('visible');
     }
 
     installBtn.addEventListener('click', triggerInstall);
@@ -472,6 +475,7 @@ if (isIos && !isStandalone) {
 
     window.addEventListener('appinstalled', () => {
         installBtn.style.display = 'none';
+        installBtn.classList.remove('visible');
         pwaBanner.classList.remove('visible');
         deferredPrompt = null;
     });

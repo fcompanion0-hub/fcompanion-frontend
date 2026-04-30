@@ -701,7 +701,7 @@ header {
 
 /* ── PWA Install Button ── */
 #pwaInstallBtn {
-    display: none;          /* JS controls visibility — don't change this */
+    display: none;          
     align-items: center;
     gap: 6px;
     padding: 7px 14px;
@@ -734,9 +734,7 @@ header {
     flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════
-    PWA INSTALL TOAST BANNER (optional nudge)
-═══════════════════════════════════════════ */
+
 #pwaBanner {
     display: none;
     position: fixed;
@@ -868,7 +866,7 @@ header {
         padding: 8px 10px;
         margin: 20px 0; }
 
-    #pwaInstallBtn {
+    #pwaInstallBtn.visible {
         padding: 0;
         width: 36px;
         height: 36px;
@@ -877,11 +875,11 @@ header {
         gap: 0;
     }
 
-    #pwaInstallBtn span {
+    #pwaInstallBtn.visible span {
         display: none;
     }
 
-    #pwaInstallBtn ion-icon {
+    #pwaInstallBtn.visible ion-icon {
         font-size: 1.3rem;
     }
 
