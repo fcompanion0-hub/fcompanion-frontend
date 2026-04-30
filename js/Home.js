@@ -238,7 +238,10 @@ function sendMessage() {
 
     fetch(`${BASE_URL}/webhook`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SESSION.getToken()}`
+        },
         body: JSON.stringify({ message, sessionId })
     })
     .then(res => {
