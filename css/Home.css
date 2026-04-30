@@ -896,7 +896,7 @@ header {
     .msg-col { max-width: 78%; }
     .bot-avatar { display: none; }
 
-    #pwaInstallBtn {
+    #pwaInstallBtn.visible {
     padding: 7px 10px;
     gap: 4px;
     font-size: 0.75rem;
