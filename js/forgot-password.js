@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.disabled = false;
         btn.textContent = text;
     }
-    
+
     // ── Theme ─────────────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
@@ -98,12 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Step 1: Send OTP ──────────────────────────────────
     document.getElementById('emailForm').addEventListener('submit', (e) => {
         e.preventDefault();
-
+        const btn   = e.target.querySelector('.submit-btn');
         const email = document.getElementById('resetEmail').value.trim();
+
         if (!email.toLowerCase().endsWith('@nileuniversity.edu.ng')) {
             showToast('Please use your Nile University email address.', 'error');
             return;
         }
+
+        setLoading(btn, 'Sending...');
 
         fetch("https://fcompanion.onrender.com/forgot-password", {
             method: "POST",
@@ -114,14 +117,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             if (data.message === "Reset OTP sent") {
                 userEmail = email;
-                document.getElementById('stepDescription').textContent =
-                    `We sent a code to ${email}`;
+                document.getElementById('stepDescription').textContent = `We sent a code to ${email}`;
                 updateStep(2);
             } else {
                 showToast(data.message, 'error');
             }
         })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
+        .catch(() => showToast('Something went wrong. Please try again.', 'error'))
+        .finally(() => resetBtn(btn, 'Send Reset Code'));
     });
 
     // ── OTP Inputs ────────────────────────────────────────
@@ -142,31 +145,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ── Step 2: Verify OTP ────────────────────────────────
-    document.getElementById('codeForm').addEventListener('submit', (e) => {
-        e.preventDefault();
+   document.getElementById('codeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('.submit-btn');
+    const otp = Array.from(codeInputs).map(i => i.value).join('');
 
-        const otp = Array.from(codeInputs).map(i => i.value).join('');
-        if (otp.length !== 6) {
-            showToast('Please enter the complete 6-digit code.', 'error');
-            return;
+    if (otp.length !== 6) {
+        showToast('Please enter the complete 6-digit code.', 'error');
+        return;
+    }
+
+    setLoading(btn, 'Verifying...');
+
+    fetch("https://fcompanion.onrender.com/verify-reset-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.message === "OTP verified") {
+            verifiedOtp = otp;
+            updateStep(3);
+        } else {
+            showToast(data.message, 'error');
         }
-
-        fetch("https://fcompanion.onrender.com/verify-reset-otp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, otp })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message === "OTP verified") {
-                verifiedOtp = otp;
-                updateStep(3);
-            } else {
-                showToast(data.message, 'error');
-            }
-        })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
-    });
+    })
+    .catch(() => showToast('Something went wrong. Please try again.', 'error'))
+    .finally(() => resetBtn(btn, 'Verify Code'));
+});
 
     // ── Resend OTP ────────────────────────────────────────
     document.getElementById('resendCode').addEventListener('click', () => {
@@ -200,38 +207,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Step 3: Reset Password ────────────────────────────
     document.getElementById('passwordForm').addEventListener('submit', (e) => {
-        e.preventDefault();
+    e.preventDefault();
+    const btn             = e.target.querySelector('.submit-btn');
+    const newPassword     = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmNewPassword').value;
 
-        const newPassword     = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmNewPassword').value;
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+        showToast(passwordError, 'error');
+        return;
+    }
 
-        const passwordError = validatePassword(newPassword);
-        if (passwordError) {
-            showToast(passwordError, 'error');
-            return;
+    if (newPassword !== confirmPassword) {
+        showToast('Passwords do not match.', 'error');
+        return;
+    }
+
+    setLoading(btn, 'Resetting...');
+
+    fetch("https://fcompanion.onrender.com/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, otp: verifiedOtp, newPassword })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.message === "Password reset successful") {
+            updateStep(4);
+        } else {
+            showToast(data.message, 'error');
         }
-
-        if (newPassword !== confirmPassword) {
-            showToast('Passwords do not match.', 'error');
-            return;
-        }
-
-        fetch("https://fcompanion.onrender.com/reset-password", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail, otp: verifiedOtp, newPassword })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message === "Password reset successful") {
-                updateStep(4);
-            } else {
-                showToast(data.message, 'error');
-            }
-        })
-        .catch(() => showToast('Something went wrong. Please try again.', 'error'));
+    })
+    .catch(() => showToast('Something went wrong. Please try again.', 'error'))
+    .finally(() => resetBtn(btn, 'Reset Password'));
     });
-
+    
     // ── Step 4: Back to Login ─────────────────────────────
     document.getElementById('backToLogin').addEventListener('click', () => {
         window.location.href = 'Auth.html';
