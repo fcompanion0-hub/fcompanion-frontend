@@ -29,6 +29,17 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(dismiss, duration);
     }
 
+    // ── Loading Button Helpers ────────────────────────────
+    function setLoading(btn, text) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> ${text}`;
+    }
+
+    function resetBtn(btn, text) {
+        btn.disabled = false;
+        btn.textContent = text;
+    }
+    
     // ── Theme ─────────────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon   = document.getElementById('themeIcon');
